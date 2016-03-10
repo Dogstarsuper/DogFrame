@@ -590,6 +590,8 @@ extension UIView
             else if  obj is [UIView] {
                 
                 let view=UIView.getFlexView()
+                view.flexVBySub()
+                view.flexHBySub()
                 view.gapV=gapV
                 view.gapH=gapH
                 view.HLayout(obj as! [UIView])
@@ -630,6 +632,8 @@ extension UIView
             else if  obj is [UIView] {
                 
                 let view=UIView.getFlexView()
+                view.flexVBySub()
+                view.flexHBySub()
                 view.gapV=gapV
                 view.gapH=gapH
                 view.VLayout(obj as! [UIView])
@@ -819,14 +823,31 @@ extension UIView{
             
             switch flexH.0{
             case .FlexNone:
+                
                 normalsize.width=frame.size.width
                 maxsize.width=frame.size.width
+                
+//                normalsize.width=floatplus(normalsize.width, to: padding.left+padding.right)
+//                normalsize.height=floatplus(normalsize.height, to: padding.top+padding.bottom)
+//                maxsize.width=floatplus(maxsize.width, to: padding.left+padding.right)
+//                maxsize.height=floatplus(maxsize.height, to: padding.top+padding.bottom)
+                
             case .FlexBySuper:
                 normalsize.width=0.0
                 maxsize.width=CGFloat.max
+                
+//                normalsize.width=floatplus(normalsize.width, to: padding.left+padding.right)
+//                normalsize.height=floatplus(normalsize.height, to: padding.top+padding.bottom)
+//                maxsize.width=floatplus(maxsize.width, to: padding.left+padding.right)
+//                maxsize.height=floatplus(maxsize.height, to: padding.top+padding.bottom)
             case .FlexBySub:
                 normalsize.width=subaligndata.normal.width
-                maxsize.width=max(frame.size.width,subaligndata.max.width)
+//                maxsize.width=max(frame.size.width,subaligndata.max.width)
+                maxsize.width=subaligndata.max.width
+//                normalsize.width=floatplus(normalsize.width, to: padding.left+padding.right)
+//                normalsize.height=floatplus(normalsize.height, to: padding.top+padding.bottom)
+//                maxsize.width=floatplus(maxsize.width, to: padding.left+padding.right)
+//                maxsize.height=floatplus(maxsize.height, to: padding.top+padding.bottom)
             }
             
             switch flexV.0{
@@ -838,8 +859,15 @@ extension UIView{
                 maxsize.height=CGFloat.max
             case .FlexBySub:
                 normalsize.height=subaligndata.normal.height
-                maxsize.height=max(frame.size.height,subaligndata.max.height)
+//                maxsize.height=max(frame.size.height,subaligndata.max.height)
+                maxsize.height=subaligndata.max.height
             }
+            
+            
+            normalsize.width=floatplus(normalsize.width, to: padding.left+padding.right)
+            normalsize.height=floatplus(normalsize.height, to: padding.top+padding.bottom)
+            maxsize.width=floatplus(maxsize.width, to: padding.left+padding.right)
+            maxsize.height=floatplus(maxsize.height, to: padding.top+padding.bottom)
             
             alignData=(normalsize,maxsize)
             

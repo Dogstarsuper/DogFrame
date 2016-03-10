@@ -10,6 +10,11 @@ import UIKit
 
 class ViewController: UIViewController {
 
+    
+    var button:UIButton = UIButton()
+    var userlogo:UIView=UIView()
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 //        navigationController?.navigationBar.hidden=true
@@ -178,15 +183,17 @@ class ViewController: UIViewController {
             return label
         }
         
-        let userview=UIView.getHFlexView(height: 100)
+        let userview=UIView.getHFlexView(height: 0)
         userview.vAlignType = .VAlignCenter
+        userview.flexVBySub()
         userview.gapH=8
         userview.gapV=8
         userview.padding=(8,9,8,9)
         userview.tag=1
         border(userview)
         
-        let userlogo=UIView.getView(CGSize(width: 60, height: 60))
+//        let userlogo=UIView.getView(CGSize(width: 60, height: 60))
+        userlogo.frame.size=CGSize(width: 60, height: 60)
         userlogo.backgroundColor=UIColor.blueColor()
         let namelabel=getLabel("姓名")
         namelabel.flexHBySuper()
@@ -194,8 +201,8 @@ class ViewController: UIViewController {
         infolabel.flexHBySuper()
         
         userview .HLayout(objs:[userlogo,])
-        userview .HLayout(objs:[[namelabel,infolabel]])
-        userview.subviews[1].vAlignType = .VAlignCenter
+//        userview .HLayout(objs:[[namelabel,infolabel]])
+//        userview.subviews[1].vAlignType = .VAlignCenter
         
         view.VLayout(view: userview)
         
@@ -216,13 +223,14 @@ class ViewController: UIViewController {
             view .VLayout(view: cell)
         }
         
-        let button=UIButton(frame: CGRectMake(0,0,100,40))
+//        let button=UIButton(frame: CGRectMake(0,0,100,40))
+        button.frame=CGRectMake(0,0,100,40)
         button.alignInfo.0 = .AlignSelf
         button.layer.cornerRadius=3
         button.backgroundColor=UIColor.blueColor()
         button.setTitle("press", forState: .Normal)
         button.setTitle("highlight", forState: .Highlighted)
-        button.addTarget(self, action: Selector("button"), forControlEvents: .TouchUpInside)
+        button.addTarget(self, action: Selector("buttonPress"), forControlEvents: .TouchUpInside)
         
         let field=UITextField(frame: CGRectMake(0,0,200,40))
         field.alignInfo.0 = .AlignSelf
@@ -237,9 +245,42 @@ class ViewController: UIViewController {
     
     
     
-    func button()
+    func buttonPress()
     {
+        button.enabled=false
         
+        self.view.setNeedsUpdateConstraints()
+//        self.view.updateConstraintsIfNeeded()
+        
+        UIView.animateWithDuration(1, delay:0.01,
+            options:UIViewAnimationOptions.TransitionNone, animations:
+            {
+                var width:CGFloat=200
+                var height:CGFloat=100
+                if(self.userlogo.frame.width==200)
+                {
+                    width=60
+                    height=60
+                }
+                
+                self.userlogo.frame=CGRectMake(0, 0, width, height)
+                
+                self.view.layoutIfNeeded()
+//                ()-> Void in
+                //在动画中，数字块有一个角度的旋转。
+//                tile.layer.setAffineTransform(CGAffineTransformMakeRotation(90))
+            },
+            completion:{
+                (finished:Bool) -> Void in
+//                UIView.animateWithDuration(1, animations:{
+//                    ()-> Void in
+//                    //完成动画时，数字块复原
+//                    tile.layer.setAffineTransform(CGAffineTransformIdentity)
+                self.button.enabled=true
+                })
+//        })
+
+    
     }
 }
 

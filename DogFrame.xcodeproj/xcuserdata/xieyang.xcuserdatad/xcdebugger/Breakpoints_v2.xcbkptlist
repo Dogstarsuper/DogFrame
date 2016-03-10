@@ -10,11 +10,27 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "DogFrame/DogFrame/DogFrame.swift"
-            timestampString = "479208714.034399"
+            timestampString = "479296792.799713"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "964"
-            endingLineNumber = "964"
+            startingLineNumber = "814"
+            endingLineNumber = "814"
+            landmarkName = "getSubAlignData(_:end:)"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "DogFrame/DogFrame/DogFrame.swift"
+            timestampString = "479297380.926347"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "909"
+            endingLineNumber = "909"
             landmarkName = "layoutSubviews(_:end:)"
             landmarkType = "5">
          </BreakpointContent>
