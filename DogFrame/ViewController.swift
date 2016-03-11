@@ -200,7 +200,11 @@ class ViewController: UIViewController {
         let infolabel=getLabel("Info")
         infolabel.flexHBySuper()
         
-        userview .HLayout(objs:[userlogo,])
+        let testview=UIView.getFlexView()
+        testview.alignInfo.0 = AlignType.AlignIgnore
+        userview .HLayout(objs:[
+            testview,
+            userlogo,])
 //        userview .HLayout(objs:[[namelabel,infolabel]])
 //        userview.subviews[1].vAlignType = .VAlignCenter
         
@@ -220,7 +224,7 @@ class ViewController: UIViewController {
             cell.padding=(0,9,0,9)
             cell.HLayout([namelabel])
             
-            view .VLayout(view: cell)
+//            view .VLayout(view: cell)
         }
         
 //        let button=UIButton(frame: CGRectMake(0,0,100,40))
@@ -239,7 +243,7 @@ class ViewController: UIViewController {
         border(field)
         
         view.VLayout(view: button)
-        view.VLayout(view: field)
+//        view.VLayout(view: field)
     }
     
     
@@ -255,15 +259,21 @@ class ViewController: UIViewController {
         UIView.animateWithDuration(1, delay:0.01,
             options:UIViewAnimationOptions.TransitionNone, animations:
             {
-                var width:CGFloat=200
-                var height:CGFloat=100
-                if(self.userlogo.frame.width==200)
-                {
-                    width=60
-                    height=60
-                }
+//                var width:CGFloat=200
+//                var height:CGFloat=100
+//                if(self.userlogo.frame.width==200)
+//                {
+//                    width=60
+//                    height=60
+//                }
+//                
+//                self.userlogo.frame=CGRectMake(0, 0, width, height)
                 
-                self.userlogo.frame=CGRectMake(0, 0, width, height)
+//                let offview=UIView.getHFlexView(height: 10)
+//                
+//                self.userlogo.superview?.insertSubview(offview, atIndex: 0)
+                
+                self.userlogo.superview?.hAlignType = .HAlignRight
                 
                 self.view.layoutIfNeeded()
 //                ()-> Void in

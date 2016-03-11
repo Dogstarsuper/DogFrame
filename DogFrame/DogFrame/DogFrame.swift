@@ -56,7 +56,7 @@ enum HLineAlignType
 
 typealias PaddingType = (top:CGFloat,left:CGFloat,bottom:CGFloat,right:CGFloat)
 typealias Flex=(FlexType,CGFloat)
-typealias AlignData=(normal:CGSize,max:CGSize)
+typealias AlignData=(normalsize:CGSize,maxsize:CGSize,normalview:Int,flexview:Int)
 typealias AlignInfo=(AlignType,AlignOrientation)
 
 
@@ -82,7 +82,7 @@ class FrameData
     var padding:PaddingType=(0.0,0.0,0.0,0.0)
     var hAlignType:HAlignType=HAlignType.HAlignLeft
     var vAlignType:VAlignType=VAlignType.VAlignTop
-    var alignData:AlignData=(CGSizeZero,CGSizeZero)
+    var alignData:AlignData=(CGSizeZero,CGSizeZero,0,0)
 }
 
 extension UIView
@@ -496,7 +496,7 @@ extension UIView
                 return data
             }
             else{
-                return (CGSizeZero,CGSizeZero)
+                return (CGSizeZero,CGSizeZero,0,0)
             }
         }
         set(newdata){
@@ -709,6 +709,20 @@ extension UIView{
 //        return frame.size
 //    }
     
+    func getLayoutSubviewsCount()->Int{
+        
+        var count=0
+        for subview in subviews{
+            guard  subview.alignInfo.0 == .AlignAll || subview.alignInfo.0 == .AlignSelf else
+            {
+                continue
+            }
+            count++
+        }
+        
+        return count
+    }
+    
     func layout()->CGSize{
         getSubAlignData(0, end: subviews.count-1)
         return layoutSubviews(0, end: subviews.count-1)
@@ -722,7 +736,7 @@ extension UIView{
         
 //        UILayoutGuide
         
-        var subaligndata:AlignData=(CGSizeZero,CGSizeZero)
+        var subaligndata:AlignData=(CGSizeZero,CGSizeZero,0,0)
         
         
 //        if(subviews.count==2){
@@ -752,21 +766,24 @@ extension UIView{
 //        }
 //        else
 //        {
+        var normalview:Int = 0
+        var flexview:Int = 0
         
         if(end>=start)
         {
+            
+            
+            
             for index in start...end {
                 
-                
-                
-                
+
                 let subview=subviews[index]
                 
                 
-                if subview is UILayoutSupport{
+                guard !(subview is UILayoutSupport) && ( subview.alignInfo.0 == .AlignAll || subview.alignInfo.0 == .AlignSelf )  else{
                     continue
                 }
-                
+//                normalview++
 //                switch alignInfo.1{
 //                case AlignOrientation.AlignH:
 //                    if(aligndata.normal.width>0)
@@ -786,25 +803,48 @@ extension UIView{
                 switch alignInfo.1{
                 case AlignOrientation.AlignH:
                     
-                    if(subaligndata.normal.width>0)
+                    if(subaligndata.normalsize.width>0)
                     {
-                        subaligndata.normal.width+=gapH
+                        subaligndata.normalsize.width+=gapH
                     }
                     
-                    subaligndata=(CGSize(width: floatplus(subaligndata.0.width,to:aligndata.0.width), height: max(subaligndata.0.height,aligndata.0.height)),
-                        CGSize(width: floatplus(subaligndata.1.width,to:aligndata.1.width), height: max(subaligndata.1.height,aligndata.1.height)))
+                    if subview.flexH.0 == .FlexNone{
+                        normalview++
+                    }
+                    else{
+                        flexview++
+                    }
+                    
+                    subaligndata.normalsize=CGSize(width: floatplus(subaligndata.0.width,to:aligndata.0.width), height: max(subaligndata.0.height,aligndata.0.height))
+                    subaligndata.maxsize=CGSize(width: floatplus(subaligndata.1.width,to:aligndata.1.width), height: max(subaligndata.1.height,aligndata.1.height))
+                        
+                    
+                    
+//                    subaligndata=(CGSize(width: floatplus(subaligndata.0.width,to:aligndata.0.width), height: max(subaligndata.0.height,aligndata.0.height)),
+//                        CGSize(width: floatplus(subaligndata.1.width,to:aligndata.1.width), height: max(subaligndata.1.height,aligndata.1.height)))
 //                        CGSizeJoin(subaligndata.1,to: aligndata.1))
                     
                     
                 case AlignOrientation.AlignV:
                     
-                    if(subaligndata.normal.height>0)
+                    if(subaligndata.normalsize.height>0)
                     {
-                        subaligndata.normal.height+=gapV
+                        subaligndata.normalsize.height+=gapV
                     }
                     
-                    subaligndata=(CGSize(width: max(subaligndata.0.width,aligndata.0.width), height: floatplus(subaligndata.0.height,to:aligndata.0.height)),
-                        CGSize(width: max(subaligndata.1.width,aligndata.1.width), height: floatplus(subaligndata.1.height,to: aligndata.1.height)))
+                    
+                    if subview.flexV.0 == .FlexNone{
+                        normalview++
+                    }
+                    else{
+                        flexview++
+                    }
+                    
+                    subaligndata.normalsize=CGSize(width: max(subaligndata.0.width,aligndata.0.width), height: floatplus(subaligndata.0.height,to:aligndata.0.height))
+                    subaligndata.maxsize=CGSize(width: max(subaligndata.1.width,aligndata.1.width), height: floatplus(subaligndata.1.height,to: aligndata.1.height))
+                    
+//                    subaligndata=(CGSize(width: max(subaligndata.0.width,aligndata.0.width), height: floatplus(subaligndata.0.height,to:aligndata.0.height)),
+//                        CGSize(width: max(subaligndata.1.width,aligndata.1.width), height: floatplus(subaligndata.1.height,to: aligndata.1.height)))
 //                        CGSizeJoin(subaligndata.1,to: aligndata.1))
                 default:()
                 }
@@ -815,7 +855,7 @@ extension UIView{
         case .AlignIgnore:
             fallthrough
         case .AlignSub:
-            alignData=(CGSizeZero,CGSizeZero)
+            alignData=(CGSizeZero,CGSizeZero,0,0)
             return alignData
         case .AlignSelf:
             fallthrough
@@ -841,9 +881,9 @@ extension UIView{
 //                maxsize.width=floatplus(maxsize.width, to: padding.left+padding.right)
 //                maxsize.height=floatplus(maxsize.height, to: padding.top+padding.bottom)
             case .FlexBySub:
-                normalsize.width=subaligndata.normal.width
+                normalsize.width=subaligndata.normalsize.width
 //                maxsize.width=max(frame.size.width,subaligndata.max.width)
-                maxsize.width=subaligndata.max.width
+                maxsize.width=subaligndata.maxsize.width
 //                normalsize.width=floatplus(normalsize.width, to: padding.left+padding.right)
 //                normalsize.height=floatplus(normalsize.height, to: padding.top+padding.bottom)
 //                maxsize.width=floatplus(maxsize.width, to: padding.left+padding.right)
@@ -858,9 +898,9 @@ extension UIView{
                 normalsize.height=0.0
                 maxsize.height=CGFloat.max
             case .FlexBySub:
-                normalsize.height=subaligndata.normal.height
+                normalsize.height=subaligndata.normalsize.height
 //                maxsize.height=max(frame.size.height,subaligndata.max.height)
-                maxsize.height=subaligndata.max.height
+                maxsize.height=subaligndata.maxsize.height
             }
             
             
@@ -869,7 +909,7 @@ extension UIView{
             maxsize.width=floatplus(maxsize.width, to: padding.left+padding.right)
             maxsize.height=floatplus(maxsize.height, to: padding.top+padding.bottom)
             
-            alignData=(normalsize,maxsize)
+            alignData=(normalsize,maxsize,normalview,flexview)
             
             print("\(alignData)")
 
@@ -887,9 +927,7 @@ extension UIView{
             if(superview != nil){
                 
             }
-            
-            
-            
+
         default:
             return frame.size
         }
@@ -911,32 +949,26 @@ extension UIView{
                 }
                 
                 if alignInfo.1 == .AlignV {
-                    if  subview.alignData.max.height==CGFloat.max {
+                    if  subview.alignData.maxsize.height==CGFloat.max {
                         flexsubviewnum++
                     }else
                     {
-                        totalflexheight-=subview.alignData.normal.height
+                        totalflexheight-=subview.alignData.normalsize.height
                     }
                 }
                 else if alignInfo.1 == .AlignH{
-                    if  subview.alignData.max.width==CGFloat.max {
+                    if  subview.alignData.maxsize.width==CGFloat.max {
                         flexsubviewnum++
                     }else
                     {
-                        totalflexwidth-=subview.alignData.normal.width
+                        totalflexwidth-=subview.alignData.normalsize.width
                     }
                 }
                 
             }
             
-            var singlelength:CGFloat=totalflexheight
             
-            if alignInfo.1 == .AlignV && flexsubviewnum>0 {
-                singlelength=totalflexheight/CGFloat(flexsubviewnum)
-            }
-            else if alignInfo.1 == .AlignH && flexsubviewnum>0 {
-                singlelength=totalflexwidth/CGFloat(flexsubviewnum)
-            }
+            
             
             
             
@@ -945,11 +977,22 @@ extension UIView{
             let starty=padding.top
             
             var x:CGFloat=startx,y:CGFloat=starty
-            
+//            let normalcount=getLayoutSubviewsCount()
             if alignInfo.1 == .AlignH {
-                totalflexwidth-=gapH*CGFloat(end-start)
+//                totalflexwidth-=gapH*CGFloat(end-start)
+                totalflexwidth-=gapH*CGFloat(alignData.normalview+alignData.flexview-1)
             }else if alignInfo.1 == .AlignV{
-                totalflexheight-=gapV*CGFloat(end-start)
+//                totalflexheight-=gapV*CGFloat(end-start)
+                totalflexheight-=gapV*CGFloat(alignData.normalview+alignData.flexview-1)
+            }
+            
+            
+            var singlelength:CGFloat=totalflexheight
+            if alignInfo.1 == .AlignV && flexsubviewnum>0 {
+                singlelength=totalflexheight/CGFloat(flexsubviewnum)
+            }
+            else if alignInfo.1 == .AlignH && flexsubviewnum>0 {
+                singlelength=totalflexwidth/CGFloat(flexsubviewnum)
             }
             
             if(flexsubviewnum==0)
@@ -1009,12 +1052,14 @@ extension UIView{
                 let subview=subviews[index]
                 
                 
-                if subview is UILayoutSupport{
+                guard !(subview is UILayoutSupport) && ( subview.alignInfo.0 == .AlignAll || subview.alignInfo.0 == .AlignSelf ) else
+                {
                     continue
                 }
                 
-                var size=CGSize(width: max(subview.alignData.normal.width,subview.alignData.max.width),
-                                height: max(subview.alignData.normal.height,subview.alignData.max.height))
+                
+                var size=CGSize(width: max(subview.alignData.normalsize.width,subview.alignData.maxsize.width),
+                                height: max(subview.alignData.normalsize.height,subview.alignData.maxsize.height))
                 
                 if size.width==CGFloat.max {
                     if alignInfo.1 == .AlignV {
