@@ -17,6 +17,16 @@ class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        let a:CGFloat=CGFloat.infinity,b:CGFloat=100.0
+        
+        let a1=CGFloat.max ,a2=CGFloat.max
+        
+        let c=a+b
+        let d=a + b
+        
+//        let c1=a1+b1
+
 //        navigationController?.navigationBar.hidden=true
         edgesForExtendedLayout = UIRectEdge.None
         navigationItem.title="Test"
@@ -224,7 +234,7 @@ class ViewController: UIViewController {
             cell.padding=(0,9,0,9)
             cell.HLayout([namelabel])
             
-//            view .VLayout(view: cell)
+            view .VLayout(view: cell)
         }
         
 //        let button=UIButton(frame: CGRectMake(0,0,100,40))
@@ -243,7 +253,7 @@ class ViewController: UIViewController {
         border(field)
         
         view.VLayout(view: button)
-//        view.VLayout(view: field)
+        view.VLayout(view: field)
     }
     
     
