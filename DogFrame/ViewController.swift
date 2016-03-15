@@ -8,6 +8,10 @@
 
 import UIKit
 
+let UIRedColor=UIColor.redColor()
+let UIBlueColor=UIColor.blueColor()
+let UIYellowColor=UIColor.yellowColor()
+
 class ViewController: UIViewController {
 
     
@@ -35,16 +39,20 @@ class ViewController: UIViewController {
         view.flexVNone()
 //        view.alignSub(AlignOrientation.AlignH)
         
-        view.gapV=8
+        view.gapV=20
+         view.gapH=20
         view.padding=(10,10,10,10)
-        
+        view.tag=1000
 //        HAlignTest()
 //        mixLayoutText()
 //        HLayoutTest()
 //        VLayoutTest()
 //        singleViewTest()
-        listTest()
-
+//        listTest()
+        labelTest()
+        
+//        allHTest()
+//        allVTest()
         // Do any additional setup after loading the view, typically from a nib.
     }
 
@@ -54,12 +62,153 @@ class ViewController: UIViewController {
     }
 
     override func viewWillLayoutSubviews() {
-        super.viewWillLayoutSubviews()
+//        super.viewWillLayoutSubviews()
         
+//        view.layout()
+//        view.setAlignHWidth(0, end: view.subviews.count)
+//        view.layout()
+//        let label:UIView? = view.viewWithTag(1)
+//        
+//        if label != nil {
+//            label?.frame.size.width=300
+//            label?.sizeToFit()
+//        }
+
         
-        view.layout()
+        view.layoutSubviews2(0, end: view.subviews.count)
+        
     }
     
+    func allVTest()
+    {
+        let view1=UIView.getView(CGSize(width: 20,height: 100))
+        view1.backgroundColor=UIRedColor
+        view1.flexVBySub()
+        view1.tag=1
+        
+        
+        let view11=UIView.getView(CGSize(width: 10,height: 50))
+        view11.backgroundColor=UIBlueColor
+        view11.tag=11
+        
+        view1 .VLayout([view11,])
+        
+        
+        let view2=UIView.getView(CGSize(width: 50,height: 150))
+        view2.backgroundColor=UIBlueColor
+        view2.padding=(5,5,5,5)
+        view2.flexHBySuper()
+        view2.flexVBySuper()
+        view2.tag=2
+        view2.gapH=10
+        
+        let view21=UIView.getView(CGSize(width: 50,height: 60))
+        view21.backgroundColor=UIYellowColor
+        //        view21.flexHBySuper()
+        view21.flexVBySub()
+        view21.tag=21
+        
+        let view22=UIView.getView(CGSize(width: 50,height: 60))
+        view22.backgroundColor=UIRedColor
+        view22.flexVBySuper()
+        view22.tag=22
+        
+        view2 .VLayout([
+            view21,
+            view22
+            ])
+        
+        let view3=UIView.getView(CGSize(width: 50,height: 200))
+        view3.backgroundColor=UIYellowColor
+        view3.tag=3
+        
+        let view33=UIView.getView(CGSize(width: 50,height: 100))
+        view33.backgroundColor=UIRedColor
+        view33.tag=33
+        view33.flexHBySuper()
+        view3 .HLayout([view33,])
+        
+        
+        let label:UILabel=UILabel(frame: CGRectMake(0,0,100,30))
+        label.flexHBySuper()
+        label.numberOfLines=0
+        label.text="2014年德国汉诺威工业博览会4月7日至11日举行。全球65个国家和地区的5000多家厂商参展。中国以近600家参展商规模成为东道主德国以外的最大参展国。"
+        
+        view .VLayout([
+            label,
+            view1,
+            view2,
+            view3
+            ])
+        
+        view.hAlignType = .HAlignRight
+        
+    }
+    
+    func allHTest()
+    {
+        let view1=UIView.getView(CGSize(width: 20,height: 100))
+        view1.backgroundColor=UIRedColor
+        view1.flexHBySub()
+        view1.tag=1
+        
+        
+        let view11=UIView.getView(CGSize(width: 10,height: 50))
+        view11.backgroundColor=UIBlueColor
+        view11.tag=11
+        
+        view1 .HLayout([view11,])
+        
+        
+        let view2=UIView.getView(CGSize(width: 50,height: 150))
+        view2.backgroundColor=UIBlueColor
+        view2.padding=(5,5,5,5)
+        view2.flexHBySuper()
+        view2.flexVBySub()
+        view2.flexVBySuper()
+        view2.tag=2
+        view2.gapH=10
+        
+        let view21=UIView.getView(CGSize(width: 50,height: 60))
+        view21.backgroundColor=UIYellowColor
+//        view21.flexHBySuper()
+        view21.flexVBySub()
+        view21.tag=21
+        
+        let view22=UIView.getView(CGSize(width: 50,height: 60))
+        view22.backgroundColor=UIRedColor
+        view22.flexHBySuper()
+        view22.tag=22
+        
+        view2 .HLayout([
+            view21,
+            view22
+            ])
+        
+        let view3=UIView.getView(CGSize(width: 50,height: 200))
+        view3.backgroundColor=UIYellowColor
+        view3.tag=3
+        
+        let view33=UIView.getView(CGSize(width: 50,height: 100))
+        view33.backgroundColor=UIRedColor
+        view33.tag=33
+        view33.flexHBySuper()
+        view3 .HLayout([view33,])
+        
+        
+        let label:UILabel=UILabel(frame: CGRectMake(0,0,100,30))
+        label.flexHBySuper()
+        label.numberOfLines=0
+        label.text="2014年德国汉诺威工业博览会4月7日至11日举行。全球65个国家和地区的5000多家厂商参展。中国以近600家参展商规模成为东道主德国以外的最大参展国。"
+        
+        view .HLayout([
+            label,
+            view2,
+            view3
+            ])
+//        view.hAlignType = .HAlignRight
+//        view.vAlignType = .VAlignBottom
+    }
     
     func singleViewTest()
     {
@@ -71,10 +220,10 @@ class ViewController: UIViewController {
         view.VLayout(view: view1)
         
         
-        let view11=UIView.getView(CGSize(width: 20, height: 10))
+        let view11=UIView.getView(CGSize(width: 100, height: 10))
         view11.backgroundColor=UIColor.yellowColor()
         view11.tag=11
-        let view12=UIView.getView(CGSize(width: 20, height: 10))
+        let view12=UIView.getView(CGSize(width: 100, height: 10))
         view12.backgroundColor=UIColor.blueColor()
         view12.tag=12
         
@@ -100,7 +249,7 @@ class ViewController: UIViewController {
         
         let view11=UIView.getView(CGSize(width: 200, height: 5))
         view11.backgroundColor=UIColor.yellowColor()
-//        view1.HLayout(view: view11)
+        view.HLayout(view: view2)
         
     }
     
@@ -118,19 +267,30 @@ class ViewController: UIViewController {
     {
         let view1=UIView.getVFlexView(width:75)
         view1.backgroundColor=UIColor.redColor()
+        view1.padding=(5,5,5,5)
         view1.flexHBySub()
+        view1.tag=1
+        view1.hAlignType = .HAlignRight
         let view2=UIView.getFlexView()
         view2.backgroundColor=UIColor.blueColor()
+        view2.tag=2
         
-        view.HLayout([view1,view2])
         
-        let view11=UIView.getView(CGSize(width: 100, height: 100))
+        let view11=UIView.getView(CGSize(width: 50, height: 100))
         view11.backgroundColor=UIColor.yellowColor()
-        let view12=UIView.getView(CGSize(width: 50, height: 100))
+        view11.tag=11
+        let view12=UIView.getView(CGSize(width: 100, height: 100))
         view12.backgroundColor=UIColor.greenColor()
+        view12.tag=12
+        view1 .VLayout([
+            view11,
+            view12
+            ])
         
-        view1 .VLayout([view11,view12])
-        
+            view.HLayout([
+                view1,
+                view2
+                ])
     }
 
     func HAlignTest()
@@ -173,6 +333,32 @@ class ViewController: UIViewController {
         view.VLayout(objs:[view1,[view2,view3]])
         
         
+    }
+    
+    func labelTest(){
+        let label=UILabel(frame: CGRectMake(0,0,0,100))
+        label.tag=1
+        label.numberOfLines=0
+        label.flexHBySuper()
+        label.text="红星此款套件板件设计合理，在表现细节的同时也尽可能的将零件整合在一起，所有可以开启的舱盖都是全活动的，炮塔的内构在组装设计方面非常不错，尤其是内构与外装甲的组合，感觉和实车的组合方式应该类似。套件组合度非常优秀，只是履带未能开出下垂感 。"
+//        label.flexVBySub()
+        
+        let labelview=UIView.getHFlexView(height: 10)
+        labelview.padding=(5,5,5,5)
+        labelview.flexVBySub()
+        labelview.backgroundColor=UIColor.yellowColor()
+        let bottomview=UIView.getHFlexView(height: 20)
+        bottomview.backgroundColor=UIColor.redColor()
+        label.sizeToFit()
+        labelview .HLayout(objs:[
+            label,
+            UIView.getView(CGSize(width: 100,height: 10))
+            
+            ])
+        
+        view.VLayout(objs: [labelview
+            ,bottomview
+            ])
     }
     
     func listTest(){

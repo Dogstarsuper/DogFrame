@@ -10,12 +10,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "DogFrame/DogFrame/DogFrame.swift"
-            timestampString = "479381565.049345"
+            timestampString = "479728347.137111"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "918"
-            endingLineNumber = "918"
-            landmarkName = "getSubAlignData(_:end:)"
+            startingLineNumber = "1097"
+            endingLineNumber = "1097"
+            landmarkName = "checkAlignHWidth(_:end:)"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -26,28 +26,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "DogFrame/DogFrame/DogFrame.swift"
-            timestampString = "479381565.049345"
+            timestampString = "479729049.24675"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "945"
-            endingLineNumber = "945"
-            landmarkName = "layoutSubviews(_:end:)"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "DogFrame/DogFrame/DogFrame.swift"
-            timestampString = "479381565.049345"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "946"
-            endingLineNumber = "946"
-            landmarkName = "layoutSubviews(_:end:)"
+            startingLineNumber = "1512"
+            endingLineNumber = "1512"
+            landmarkName = "checkAlignHHeight(_:end:)"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

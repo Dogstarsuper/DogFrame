@@ -739,52 +739,19 @@ extension UIView{
     {
         
         var normalsize=CGSizeZero,maxsize=CGSizeZero
-        
-//        UILayoutGuide
-        
         var subaligndata:AlignData=(CGSizeZero,CGSizeZero,0,0)
         
         
-//        if(subviews.count==2){
-//            switch flexH.0{
-//            case .FlexNone:
-//                fallthrough
-//            case .FlexBySub:
-//                normalsize.width=frame.size.width
-//                maxsize.width=frame.size.width
-//            case .FlexBySuper:
-//                normalsize.width=CGFloat.infinity
-//                maxsize.width=CGFloat.infinity
-//            }
-//            
-//            switch flexV.0{
-//            case .FlexNone:
-//                fallthrough
-//            case .FlexBySub:
-//                normalsize.height=frame.size.height
-//                maxsize.height=frame.size.height
-//            case .FlexBySuper:
-//                normalsize.height=CGFloat.infinity
-//                maxsize.height=CGFloat.infinity
-//            }
-//            
-//            return (normalsize,maxsize)
-//        }
-//        else
-//        {
         var normalview:Int = 0
         var flexview:Int = 0
         
         if(end>=start)
         {
-            
-            
-            
+
             for index in start...end {
                 
 
                 let subview=subviews[index]
-                
                 
                 guard !(subview is UILayoutSupport) && ( subview.alignInfo.0 == .AlignAll || subview.alignInfo.0 == .AlignSelf )  else{
                     continue
@@ -804,6 +771,7 @@ extension UIView{
 //                default:()
 //                }
                 
+                
                 let aligndata=subview.getSubAlignData(0,end:subview.subviews.count-1)
                 
                 switch alignInfo.1{
@@ -811,7 +779,7 @@ extension UIView{
                     
                     if(subaligndata.normalsize.width>0)
                     {
-                        subaligndata.normalsize.width+=gapH
+//                        subaligndata.normalsize.width+=gapH
                     }
                     
                     if subview.flexH.0 == .FlexNone{
@@ -835,7 +803,7 @@ extension UIView{
                     
                     if(subaligndata.normalsize.height>0)
                     {
-                        subaligndata.normalsize.height+=gapV
+//                        subaligndata.normalsize.height+=gapV
                     }
                     
                     
@@ -910,6 +878,16 @@ extension UIView{
             }
             
             
+            switch alignInfo.1{
+            case AlignOrientation.AlignH:
+                normalsize.width+=gapH*CGFloat(normalview+flexview-1)
+                maxsize.width+=gapH*CGFloat(normalview+flexview-1)
+            case AlignOrientation.AlignV:
+                normalsize.height+=gapH*CGFloat(normalview+flexview-1)
+                maxsize.height+=gapH*CGFloat(normalview+flexview-1)
+            default:()
+            }
+            
             normalsize.width=normalsize.width+padding.left+padding.right
             normalsize.height=normalsize.height+padding.top+padding.bottom
             maxsize.width=maxsize.width+padding.left+padding.right
@@ -922,6 +900,720 @@ extension UIView{
             return alignData
         }
     }
+    
+    
+    func checkAlignVWidth(start:Int,end:Int){
+        
+        guard !(self is UILayoutSupport) && alignInfo.0 != .AlignIgnore  && alignInfo.0 != .AlignSelf   else  {
+            return
+        }
+        
+        if getLayoutSubviewsCount() == 0 {
+            
+            switch flexH.0{
+            case .FlexBySub:
+                alignData.normalsize.width=0
+                alignData.maxsize.width=0
+            case .FlexBySuper:
+                alignData.normalsize.width=0
+                alignData.maxsize.width=CGFloat.infinity
+            case .FlexNone:
+                alignData.normalsize.width=frame.size.width
+                alignData.maxsize.width=frame.size.width
+            }
+            
+            return
+        }
+        
+        var normalwidth:CGFloat=0
+        var maxwidth:CGFloat=0
+        
+        if end>=start{
+            
+            for index in start...end{
+                
+                guard subviews.count>index else{
+                    continue
+                }
+                
+                let subview=subviews[index]
+                
+                guard !(subview is UILayoutSupport) else{
+                    continue
+                }
+                
+//                subview .checkAlignVWidth(0, end: subview.subviews.count)
+                subview .checkWidth(0, end: subview.subviews.count)
+                
+                switch subview.flexH.0{
+                case .FlexBySub:
+                    fallthrough
+                case .FlexNone:
+                    normalwidth = max(normalwidth,subview.alignData.normalsize.width)
+                    maxwidth = max(maxwidth, subview.alignData.maxsize.width)
+                    
+                case .FlexBySuper:
+                    maxwidth=CGFloat.infinity
+                }
+            }
+        }
+        
+        normalwidth+=(padding.left+padding.right)
+        maxwidth+=(padding.top+padding.bottom)
+        alignData.normalsize.width=normalwidth
+        alignData.maxsize.width=maxwidth
+    }
+    
+    
+    
+    func resetAlignVWidth(start:Int,end:Int)
+    {
+        guard getLayoutSubviewsCount()>0 && alignInfo.0 != .AlignIgnore  && alignInfo.0 != .AlignSelf   else  {
+            return
+        }
+        
+//        switch flexH.0{
+//        case .FlexBySub:
+//            frame.size.width = alignData.normalsize.width+padding.left+padding.right
+//        default:()
+//        }
+        
+        if(end>=start)
+        {
+            var startx:CGFloat=padding.left
+            let totalwidth=frame.size.width-padding.left-padding.right
+            
+            
+            
+            for index in start...end{
+                
+                startx=padding.left
+                
+                guard subviews.count>index else{
+                    continue
+                }
+                
+                let subview=subviews[index]
+                
+                guard !(subview is UILayoutSupport) else{
+                    continue
+                }
+                
+                switch subview.flexH.0{
+                case .FlexBySuper:
+                    subview.frame.size.width=totalwidth
+                case  .FlexBySub:
+                    subview.frame.size.width=subview.alignData.normalsize.width
+                default:()
+                }
+                
+                let leftwidth=totalwidth-subview.frame.size.width
+                
+                if leftwidth>0
+                {
+                    if hAlignType == .HAlignRight{
+                        startx+=leftwidth
+                        
+                    }
+                    else if hAlignType == .HAlignMiddle{
+                        startx+=leftwidth/2
+                    }
+                }
+                subview.frame.origin.x = startx
+                
+                if subview is UILabel{
+                    let label = subview as! UILabel
+                    label.sizeToFit()
+                }
+                
+//                subview.resetAlignVWidth(start, end: end)
+                subview.resetWidth(start, end: end)
+            }
+
+        }
+        
+    }
+    
+    func checkAlignHWidth(start:Int,end:Int)
+    {
+        guard !(self is UILayoutSupport) && alignInfo.0 != .AlignIgnore  && alignInfo.0 != .AlignSelf   else  {
+            return
+        }
+        
+        
+        if getLayoutSubviewsCount() == 0 {
+
+            switch flexH.0{
+            case .FlexBySub:
+                alignData.normalsize.width=0
+                alignData.maxsize.width=0
+            case .FlexBySuper:
+                alignData.normalsize.width=0
+                alignData.maxsize.width=CGFloat.infinity
+            case .FlexNone:
+                alignData.normalsize.width=frame.size.width
+                alignData.maxsize.width=frame.size.width
+            }
+            
+            return
+        }
+        
+        //normal是sub和none的长度
+        var normalwidth:CGFloat=0.0
+        var maxwidth:CGFloat=0.0
+        
+//        if flexH.0 == .FlexNone{
+//            normalwidth=0
+//            maxwidth=0
+//        }else if flexH.0 == .FlexBySuper{
+//            normalwidth=CGFloat.infinity
+//            maxwidth=CGFloat.infinity
+//        }
+        
+        var normalcount=0
+        var flexcount=0
+        
+        if end>=start{
+            
+            for index in start...end{
+                
+                
+                guard subviews.count>index else{
+                    continue
+                }
+                
+                let subview=subviews[index]
+                
+                guard !(subview is UILayoutSupport) else{
+                    continue
+                }
+                
+//                subview .checkAlignHWidth(0, end: subview.subviews.count)
+                subview .checkWidth(start,end:end)
+                
+                
+                
+//                if flexH.0 == .FlexBySub {
+                    switch subview.flexH.0{
+                    case .FlexBySub:
+                        normalwidth+=subview.alignData.normalsize.width
+                        maxwidth+=subview.alignData.maxsize.width
+                        normalcount++
+                    case .FlexNone:
+                        
+//                        if flexH.0 == .FlexBySub {
+                        
+                        normalwidth+=subview.frame.size.width
+                        maxwidth+=subview.frame.size.width
+//                        }
+                        normalcount++
+                    case .FlexBySuper:
+                        
+//                        if flexH.0 == .FlexBySub {
+                            maxwidth=CGFloat.infinity
+//                        }
+                        
+                        
+                        flexcount++
+                    }
+//                }
+                
+            }
+        }
+        
+        
+        
+        if  (normalcount+flexcount)>1 {
+            normalwidth += gapH*CGFloat(normalcount+flexcount-1)
+            maxwidth += gapH*CGFloat(normalcount+flexcount-1)
+        }
+        normalwidth+=(padding.left+padding.right)
+        maxwidth+=(padding.left+padding.right)
+        
+        alignData.normalview=normalcount
+        alignData.flexview=flexcount
+        
+        
+        alignData.normalsize.width=normalwidth
+        alignData.maxsize.width=maxwidth
+    }
+    
+    
+    func resetAlignHWidth(start:Int,end:Int){
+        
+        
+        guard getLayoutSubviewsCount() >= 0 && alignInfo.0 != .AlignIgnore   else  {
+            return
+        }
+        
+//        switch flexH.0{
+//        case .FlexBySub:
+//            frame.size.width = alignData.normalsize.width+padding.left+padding.right
+//        default:()
+//        }
+        
+        if end>=start{
+            
+//            var totalwidth:CGFloat=0.0
+//            var nomalwidth:CGFloat=0.0
+//            for index in start...end{
+//                
+//                guard subviews.count>index else{
+//                    continue
+//                }
+//                
+//                let subview=subviews[index]
+//                
+//                guard !(subview is UILayoutSupport) else{
+//                    continue
+//                }
+//                
+//                nomalwidth += subview.alignData.normalsize.width
+//            }
+            
+            
+            let totalwidth=frame.size.width //-padding.left-padding.right
+            var leftwidth=totalwidth-alignData.normalsize.width
+            var singlelength:CGFloat=leftwidth
+            let flexcount=alignData.flexview
+            if  flexcount>0 {
+                
+                singlelength=leftwidth/CGFloat(flexcount)
+                leftwidth=0
+            }
+            else{
+                
+            }
+            
+            
+            var startx=padding.left
+            
+            if hAlignType == .HAlignRight{
+                startx+=leftwidth
+            }
+            else if hAlignType == .HAlignMiddle{
+                startx+=leftwidth/2
+            }
+            
+            for index in start...end{
+                
+                guard subviews.count>index else{
+                    continue
+                }
+                
+                let subview=subviews[index]
+                
+                guard !(subview is UILayoutSupport) else{
+                    continue
+                }
+                
+                subview.frame.origin.x = startx
+                
+
+                switch subview.flexH.0 {
+                case .FlexBySuper:
+                    subview.frame.size.width=singlelength
+                case .FlexBySub:
+                    subview.frame.size.width=subview.alignData.normalsize.width
+                case .FlexNone:()
+                }
+                
+                startx+=subview.frame.size.width
+                startx+=gapH
+                
+//                subview.resetAlignHWidth(0, end: subview.subviews.count)
+                subview.resetWidth(0, end: subview.subviews.count)
+                if subview is UILabel{
+                    let label = subview as! UILabel
+                    label.sizeToFit()
+                }
+            }
+        }
+        
+    }
+    
+    
+    func  checkWidth(start:Int,end:Int){
+        
+        if alignInfo.1 == .AlignH {
+            checkAlignHWidth(0, end: subviews.count)
+        }
+        else if alignInfo.1 == .AlignV {
+            checkAlignVWidth(0, end: subviews.count)
+        }
+        else {
+            alignData.normalsize.width=frame.size.width
+            alignData.maxsize.width=frame.size.height
+        }
+    }
+    
+    func resetWidth(start:Int,end:Int){
+    
+        if alignInfo.1 == .AlignH {
+            resetAlignHWidth(0, end: subviews.count)
+        }
+        else if alignInfo.1 == .AlignV {
+            resetAlignVWidth(0, end: subviews.count)
+        }
+    }
+    
+    
+    func  checkHeight(start:Int,end:Int){
+        
+        if alignInfo.1 == .AlignH {
+            checkAlignHHeight(0, end: subviews.count)
+        }
+        else if alignInfo.1 == .AlignV {
+            checkAlignVHeight(0, end: subviews.count)
+        }
+        else {
+            alignData.normalsize.height=frame.size.height
+            alignData.maxsize.height=frame.size.height
+        }
+    }
+    
+    func resetHeight(start:Int,end:Int){
+        
+        if alignInfo.1 == .AlignH {
+            resetAlignHHeight(0, end: subviews.count)
+        }
+        else if alignInfo.1 == .AlignV {
+            resetAlignVHeight(0, end: subviews.count)
+        }
+    }
+    
+    
+    
+    
+    func layoutH(start:Int,end:Int){
+        
+        checkAlignHWidth(0, end: subviews.count)
+        
+        resetAlignHWidth(0, end: subviews.count)
+        
+        checkAlignHHeight(0, end: subviews.count)
+        
+        resetAlignHHeight(0, end: subviews.count)
+    }
+    
+    func layoutV(start:Int,end:Int){
+        checkAlignVWidth(0, end: subviews.count)
+        
+        resetAlignVWidth(0, end: subviews.count)
+        
+        checkAlignVHeight(0, end: subviews.count)
+        
+        resetAlignVHeight(0, end: subviews.count)
+    }
+    
+    
+    func checkAlignVHeight(start:Int,end:Int)
+    {
+        guard !(self is UILayoutSupport) && alignInfo.0 != .AlignIgnore  && alignInfo.0 != .AlignSelf   else  {
+            return
+        }
+        
+        if getLayoutSubviewsCount() == 0 {
+            
+            switch flexH.0{
+            case .FlexBySub:
+                alignData.normalsize.height=0
+                alignData.maxsize.height=0
+            case .FlexBySuper:
+                alignData.normalsize.height=0
+                alignData.maxsize.height=CGFloat.infinity
+            case .FlexNone:
+                alignData.normalsize.height=frame.size.height
+                alignData.maxsize.height=frame.size.height
+            }
+            return
+        }
+        
+        var normalheight:CGFloat=0.0
+        var maxheight:CGFloat=0.0
+        
+        var normalcount=0
+        var flexcount=0
+        
+        
+        if end>=start{
+            
+            for index in start...end{
+                
+                
+                guard subviews.count>index else{
+                    continue
+                }
+                
+                let subview=subviews[index]
+                
+                guard !(subview is UILayoutSupport) else{
+                    continue
+                }
+                
+//                subview .checkAlignVHeight(0, end: subview.subviews.count)
+                subview .checkHeight(0, end: subview.subviews.count)
+                switch subview.flexV.0{
+                case .FlexBySub:
+                    normalheight+=subview.alignData.normalsize.height
+                    maxheight+=subview.alignData.maxsize.height
+                    normalcount++
+                case .FlexNone:
+                    
+                    //                        if flexH.0 == .FlexBySub {
+                    
+                    normalheight+=subview.frame.size.height
+                    maxheight+=subview.frame.size.height
+                    //                        }
+                    normalcount++
+                case .FlexBySuper:
+                    
+                    //                        if flexH.0 == .FlexBySub {
+                    maxheight=CGFloat.infinity
+                    //                        }
+                    
+                    
+                    flexcount++
+                }
+            }
+            
+            
+            if  (normalcount+flexcount)>1 {
+                normalheight += gapV*CGFloat(normalcount+flexcount-1)
+                maxheight += gapH*CGFloat(normalcount+flexcount-1)
+            }
+            normalheight+=(padding.top+padding.bottom)
+            maxheight+=(padding.top+padding.bottom)
+            
+            alignData.normalview=normalcount
+            alignData.flexview=flexcount
+            
+            
+            alignData.normalsize.height=normalheight
+            alignData.maxsize.height=maxheight
+        }
+    }
+    
+    func resetAlignVHeight(start:Int,end:Int){
+        
+        guard getLayoutSubviewsCount() >= 0 && alignInfo.0 != .AlignIgnore   else  {
+            return
+        }
+        
+//        switch flexH.0{
+//        case .FlexBySub:
+//            frame.size.height = alignData.normalsize.height+padding.top+padding.bottom
+//        default:()
+//        }
+        
+        if end>=start{
+            
+            
+            let totalheight=frame.size.height //-padding.left-padding.right
+            var leftheight=totalheight-alignData.normalsize.height
+            var singlelength:CGFloat=leftheight
+            let flexcount=alignData.flexview
+            if  flexcount>0 {
+                
+                singlelength=leftheight/CGFloat(flexcount)
+                leftheight=0
+            }
+            else{
+                
+            }
+            
+            
+            var starty=padding.top
+            
+            if vAlignType == .VAlignBottom{
+                starty+=leftheight
+            }
+            else if vAlignType == .VAlignCenter{
+                starty+=leftheight/2
+            }
+            
+            for index in start...end{
+                
+                guard subviews.count>index else{
+                    continue
+                }
+                
+                let subview=subviews[index]
+                
+                guard !(subview is UILayoutSupport) else{
+                    continue
+                }
+                
+                subview.frame.origin.y = starty
+                
+                
+                switch subview.flexV.0 {
+                case .FlexBySuper:
+                    subview.frame.size.height=singlelength
+                case .FlexBySub:
+                    subview.frame.size.height=subview.alignData.normalsize.height
+                case .FlexNone:()
+                }
+                
+                starty+=subview.frame.size.height
+                starty+=gapV
+                
+//                subview.resetAlignVHeight(0, end: subview.subviews.count)
+                subview.resetHeight(0, end: subview.subviews.count)
+            }
+        }
+
+        
+    }
+    
+    func checkAlignHHeight(start:Int,end:Int)
+    {
+        guard alignInfo.0 != .AlignIgnore  && alignInfo.0 != .AlignSelf   else  {
+            return
+        }
+    
+        if getLayoutSubviewsCount() == 0 {
+        
+//            alignData.normalsize.height=0
+//            alignData.maxsize.height=0
+            
+            switch flexV.0{
+            case .FlexBySub:
+                alignData.normalsize.height=0
+                alignData.maxsize.height=0
+            case .FlexBySuper:
+                alignData.normalsize.height=0
+                alignData.maxsize.height=CGFloat.infinity
+            case .FlexNone:
+                alignData.normalsize.height=frame.size.height
+                alignData.maxsize.height=frame.size.height
+            }
+            return
+        }
+        
+        var normalheight:CGFloat=0
+        var maxheight:CGFloat=0
+        
+        if end>=start{
+            
+            for index in start...end{
+                
+                
+                guard subviews.count>index else{
+                    continue
+                }
+                
+                let subview=subviews[index]
+                
+                guard !(subview is UILayoutSupport) else{
+                    continue
+                }
+                
+//                subview .checkAlignHHeight(0, end: subview.subviews.count)
+                subview .checkHeight(0, end: subview.subviews.count)
+                
+                switch subview.flexV.0{
+                case .FlexBySub:
+                    fallthrough
+                case .FlexNone:
+                    normalheight = max(normalheight,subview.alignData.normalsize.height)
+                    maxheight = max(maxheight, subview.alignData.maxsize.height)
+
+                case .FlexBySuper:
+                    maxheight=CGFloat.infinity
+                }
+            }
+        }
+        
+        normalheight+=(padding.top+padding.bottom)
+        maxheight+=(padding.top+padding.bottom)
+        alignData.normalsize.height=normalheight
+        alignData.maxsize.height=maxheight
+
+    }
+    
+    func resetAlignHHeight(start:Int,end:Int)
+    {
+        guard getLayoutSubviewsCount()>0 && alignInfo.0 != .AlignIgnore  && alignInfo.0 != .AlignSelf   else  {
+            return
+        }
+        
+        
+//        switch flexV.0 {
+//        case .FlexBySub:
+//            frame.size.height=alignData.normalsize.height+padding.top+padding.bottom
+//        default:()
+//        }
+//        
+        if(end>=start)
+        {
+            var starty:CGFloat=padding.top
+            let totalheight=frame.size.height-padding.top-padding.bottom
+            
+            
+            
+            for index in start...end{
+                
+                starty=padding.top
+                
+                guard subviews.count>index else{
+                    continue
+                }
+                
+                let subview=subviews[index]
+                
+                guard !(subview is UILayoutSupport) else{
+                    continue
+                }
+                
+                switch subview.flexV.0{
+                case .FlexBySuper:
+                    subview.frame.size.height=totalheight
+                case  .FlexBySub:
+                    subview.frame.size.height=subview.alignData.normalsize.height
+                default:()
+                }
+                
+                let leftheight=totalheight-subview.frame.size.height
+                
+                if leftheight>0
+                {
+                    if vAlignType == .VAlignBottom{
+                        starty+=leftheight
+                        
+                    }
+                    else if vAlignType == .VAlignCenter{
+                        starty+=leftheight/2
+                    }
+                }
+                subview.frame.origin.y = starty
+                
+//                subview.resetAlignHHeight(start, end: end)
+                subview.resetHeight(start, end: end)
+            }
+            
+            
+        }
+        
+    }
+    
+    
+    
+    func layoutSubviews2(start:Int,end:Int)->CGSize{
+        
+        
+//        layoutH(start, end: end)
+//        layoutV(start, end: end)
+        
+        checkWidth(start,end:end)
+        resetWidth(start,end:end)
+        checkHeight(start,end:end)
+        resetHeight(start,end:end)
+        
+        return frame.size
+    }
+    
+    
     
     
     func layoutSubviews(start:Int,end:Int)->CGSize{
@@ -972,11 +1664,6 @@ extension UIView{
                 }
                 
             }
-            
-            
-            
-            
-            
             
             
             let startx=padding.left
