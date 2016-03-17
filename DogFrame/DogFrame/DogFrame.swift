@@ -947,7 +947,15 @@ extension UIView{
                 
                 switch subview.flexH.0{
                 case .FlexBySub:
-                    fallthrough
+                    
+                    if subview.alignData.maxsize.width == CGFloat.infinity {
+                        normalwidth = max(normalwidth,subview.alignData.normalsize.width)
+                        maxwidth = max(maxwidth, subview.alignData.maxsize.width)
+                    }
+                    else{
+                        normalwidth=0
+                        maxwidth=CGFloat.infinity
+                    }
                 case .FlexNone:
                     normalwidth = max(normalwidth,subview.alignData.normalsize.width)
                     maxwidth = max(maxwidth, subview.alignData.maxsize.width)
@@ -1003,7 +1011,14 @@ extension UIView{
                 case .FlexBySuper:
                     subview.frame.size.width=totalwidth
                 case  .FlexBySub:
-                    subview.frame.size.width=subview.alignData.normalsize.width
+                    
+                    if subview.alignData.maxsize.width == CGFloat.infinity{
+                        subview.frame.size.width=totalwidth
+                    }
+                    else{
+                        subview.frame.size.width=subview.alignData.normalsize.width
+                    }
+                    
                 default:()
                 }
                 
@@ -1096,9 +1111,22 @@ extension UIView{
 //                if flexH.0 == .FlexBySub {
                     switch subview.flexH.0{
                     case .FlexBySub:
-                        normalwidth+=subview.alignData.normalsize.width
-                        maxwidth+=subview.alignData.maxsize.width
-                        normalcount++
+                        
+                        
+                        
+                        if subview.alignData.maxsize.width == CGFloat.infinity{
+                            maxwidth=CGFloat.infinity
+                            flexcount++
+                        }
+                        else
+                        {
+                            normalwidth+=subview.alignData.normalsize.width
+                            maxwidth+=subview.alignData.maxsize.width
+                            normalcount++
+                        }
+//                        normalcount++
+                        
+                        
                     case .FlexNone:
                         
 //                        if flexH.0 == .FlexBySub {
@@ -1112,7 +1140,6 @@ extension UIView{
 //                        if flexH.0 == .FlexBySub {
                             maxwidth=CGFloat.infinity
 //                        }
-                        
                         
                         flexcount++
                     }
@@ -1214,7 +1241,14 @@ extension UIView{
                 case .FlexBySuper:
                     subview.frame.size.width=singlelength
                 case .FlexBySub:
-                    subview.frame.size.width=subview.alignData.normalsize.width
+                    if subview.alignData.maxsize.width == CGFloat.infinity{
+                       subview.frame.size.width=singlelength
+                    }
+                    else{
+                        subview.frame.size.width=subview.alignData.normalsize.width
+                    }
+                    
+//                    subview.frame.size.width=subview.alignData.normalsize.width
                 case .FlexNone:()
                 }
                 
@@ -1355,9 +1389,19 @@ extension UIView{
                 subview .checkHeight(0, end: subview.subviews.count)
                 switch subview.flexV.0{
                 case .FlexBySub:
-                    normalheight+=subview.alignData.normalsize.height
-                    maxheight+=subview.alignData.maxsize.height
-                    normalcount++
+                    
+                    if subview.alignData.maxsize.height == CGFloat.infinity{
+                        maxheight=CGFloat.infinity
+                        flexcount++
+                    }
+                    else{
+                        normalheight+=subview.alignData.normalsize.height
+                        maxheight+=subview.alignData.maxsize.height
+                        normalcount++
+                    }
+//                    normalheight+=subview.alignData.normalsize.height
+//                    maxheight+=subview.alignData.maxsize.height
+//                    normalcount++
                 case .FlexNone:
                     
                     //                        if flexH.0 == .FlexBySub {
@@ -1451,7 +1495,14 @@ extension UIView{
                 case .FlexBySuper:
                     subview.frame.size.height=singlelength
                 case .FlexBySub:
-                    subview.frame.size.height=subview.alignData.normalsize.height
+                    
+                    if subview.alignData.maxsize.height ==  CGFloat.infinity {
+                        subview.frame.size.height=singlelength
+                    }
+                    else{
+                       subview.frame.size.height=subview.alignData.normalsize.height
+                    }
+                    
                 case .FlexNone:()
                 }
                 
@@ -1514,7 +1565,15 @@ extension UIView{
                 
                 switch subview.flexV.0{
                 case .FlexBySub:
-                    fallthrough
+//                    fallthrough
+                    
+                    if subview.alignData.maxsize.height == CGFloat.infinity{
+                        maxheight=CGFloat.infinity
+                    }
+                    else{
+                        normalheight = max(normalheight,subview.alignData.normalsize.height)
+                        maxheight = max(maxheight, subview.alignData.maxsize.height)
+                    }
                 case .FlexNone:
                     normalheight = max(normalheight,subview.alignData.normalsize.height)
                     maxheight = max(maxheight, subview.alignData.maxsize.height)
@@ -1570,7 +1629,15 @@ extension UIView{
                 case .FlexBySuper:
                     subview.frame.size.height=totalheight
                 case  .FlexBySub:
-                    subview.frame.size.height=subview.alignData.normalsize.height
+                    
+                    if subview.alignData.maxsize.height == CGFloat.infinity{
+                        subview.frame.size.height=totalheight
+                    }
+                    else{
+                        subview.frame.size.height=subview.alignData.normalsize.height
+                    }
+                    
+                    
                 default:()
                 }
                 

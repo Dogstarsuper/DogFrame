@@ -45,13 +45,13 @@ class ViewController: UIViewController {
         view.tag=1000
 //        HAlignTest()
 //        mixLayoutText()
-//        HLayoutTest()
+//        VLayoutTest()
 //        VLayoutTest()
 //        singleViewTest()
 //        listTest()
-        labelTest()
+//        labelTest()
         
-//        allHTest()
+        allHTest()
 //        allVTest()
         // Do any additional setup after loading the view, typically from a nib.
     }
@@ -233,13 +233,17 @@ class ViewController: UIViewController {
     
     func HLayoutTest(){
         
-        let view1=UIView.getHFlexView(height:10)
+        let view1=UIView.getHFlexView(height:30)
         view1.backgroundColor=UIColor.redColor()
-//        view1.flexHBySub()
+        view1.flexHBySub()
+        view1.flexVBySub()
+        view1.padding=(5,5,5,5)
         let view2=UIView.getHFlexView(height:20)
+//        let view2=UIView.getView(CGSize(width: 200, height: 15))
+        view2.flexVBySuper()
         view2.backgroundColor=UIColor.blueColor()
-        
-        view.HLayout([view1])
+        view2.padding=(5,5,5,5)
+        view1.HLayout([view2])
         
         view.tag=0
         view1.tag=1
@@ -247,9 +251,11 @@ class ViewController: UIViewController {
         
         
         
-        let view11=UIView.getView(CGSize(width: 200, height: 5))
-        view11.backgroundColor=UIColor.yellowColor()
-        view.HLayout(view: view2)
+//        let view11=UIView.getView(CGSize(width: 150, height: 5))
+//        view11.backgroundColor=UIColor.yellowColor()
+//        view2.HLayout([view11])
+        
+        view.HLayout(view: view1)
         
     }
     
@@ -257,10 +263,23 @@ class ViewController: UIViewController {
         
         let view1=UIView.getVFlexView(width:20)
         view1.backgroundColor=UIColor.redColor()
+        view1.padding=(5,5,5,5)
+        view1.flexHBySub()
+        let view11=UIView.getVFlexView(width:20)
+        view11.backgroundColor=UIColor.blueColor()
+        
+        view1.VLayout([
+            view11,
+            //            view2
+            ])
+        
         let view2=UIView.getVFlexView(width:20)
         view2.backgroundColor=UIColor.blueColor()
         
-        view.VLayout([view1,view2])
+        view.VLayout([
+            view1,
+//            view2
+            ])
     }
     
     func mixLayoutText()
@@ -336,7 +355,7 @@ class ViewController: UIViewController {
     }
     
     func labelTest(){
-        let label=UILabel(frame: CGRectMake(0,0,0,100))
+        let label=UILabel(frame: CGRectMake(0,0,150,100))
         label.tag=1
         label.numberOfLines=0
         label.flexHBySuper()
@@ -346,19 +365,24 @@ class ViewController: UIViewController {
         let labelview=UIView.getHFlexView(height: 10)
         labelview.padding=(5,5,5,5)
         labelview.flexVBySub()
+        labelview.flexHBySub()
+        labelview.tag=1
         labelview.backgroundColor=UIColor.yellowColor()
         let bottomview=UIView.getHFlexView(height: 20)
         bottomview.backgroundColor=UIColor.redColor()
         label.sizeToFit()
         labelview .HLayout(objs:[
             label,
-            UIView.getView(CGSize(width: 100,height: 10))
+//            UIView.getView(CGSize(width: 100,height: 10))
             
             ])
         
-        view.VLayout(objs: [labelview
-            ,bottomview
+        view.HLayout(objs: [labelview
+//            ,bottomview
             ])
+        
+        
+        
     }
     
     func listTest(){
@@ -381,6 +405,7 @@ class ViewController: UIViewController {
         
         let userview=UIView.getHFlexView(height: 0)
         userview.vAlignType = .VAlignCenter
+//        userview.hAlignType = .HAlignRight
         userview.flexVBySub()
         userview.gapH=8
         userview.gapV=8
@@ -392,16 +417,21 @@ class ViewController: UIViewController {
         userlogo.frame.size=CGSize(width: 60, height: 60)
         userlogo.backgroundColor=UIColor.blueColor()
         let namelabel=getLabel("姓名")
-        namelabel.flexHBySuper()
+//        namelabel.flexHBySuper()
         let infolabel=getLabel("Info")
-        infolabel.flexHBySuper()
+//        infolabel.flexHBySuper()
         
         let testview=UIView.getFlexView()
         testview.alignInfo.0 = AlignType.AlignIgnore
+//        userview .HLayout(objs:[
+////            testview,
+//            userlogo,
+//            ])
         userview .HLayout(objs:[
-            testview,
-            userlogo,])
-//        userview .HLayout(objs:[[namelabel,infolabel]])
+            userlogo,
+            [
+            namelabel,
+            infolabel]])
 //        userview.subviews[1].vAlignType = .VAlignCenter
         
         view.VLayout(view: userview)
@@ -420,7 +450,7 @@ class ViewController: UIViewController {
             cell.padding=(0,9,0,9)
             cell.HLayout([namelabel])
             
-            view .VLayout(view: cell)
+//            view .VLayout(view: cell)
         }
         
 //        let button=UIButton(frame: CGRectMake(0,0,100,40))
@@ -439,7 +469,7 @@ class ViewController: UIViewController {
         border(field)
         
         view.VLayout(view: button)
-        view.VLayout(view: field)
+//        view.VLayout(view: field)
     }
     
     
