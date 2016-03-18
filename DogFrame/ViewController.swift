@@ -12,9 +12,10 @@ let UIRedColor=UIColor.redColor()
 let UIBlueColor=UIColor.blueColor()
 let UIYellowColor=UIColor.yellowColor()
 
-class ViewController: UIViewController {
+class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource {
 
-    
+    var tableView:UITableView?
+    var cellTitles=["Vertical layout","Horizontal layout"]
     var button:UIButton = UIButton()
     var userlogo:UIView=UIView()
     
@@ -22,27 +23,32 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let a:CGFloat=CGFloat.infinity,b:CGFloat=100.0
+        edgesForExtendedLayout = UIRectEdge.None
+        navigationItem.title="DogFrame"
         
-        let a1=CGFloat.max ,a2=CGFloat.max
+        initTableview()
         
-        let c=a+b
-        let d=a + b
+        
+//        let a:CGFloat=CGFloat.infinity,b:CGFloat=100.0
+//        
+//        let a1=CGFloat.max ,a2=CGFloat.max
+//        
+//        let c=a+b
+//        let d=a + b
         
 //        let c1=a1+b1
 
 //        navigationController?.navigationBar.hidden=true
-        edgesForExtendedLayout = UIRectEdge.None
-        navigationItem.title="Test"
-        view.backgroundColor=UIColor.whiteColor()
-        view.flexHNone()
-        view.flexVNone()
+        
+//        view.backgroundColor=UIColor.whiteColor()
+//        view.flexHNone()
+//        view.flexVNone()
 //        view.alignSub(AlignOrientation.AlignH)
         
-        view.gapV=20
-         view.gapH=20
-        view.padding=(10,10,10,10)
-        view.tag=1000
+//        view.gapV=20
+//         view.gapH=20
+//        view.padding=(10,10,10,10)
+//        view.tag=1000
 //        HAlignTest()
 //        mixLayoutText()
 //        VLayoutTest()
@@ -51,7 +57,7 @@ class ViewController: UIViewController {
 //        listTest()
 //        labelTest()
         
-        allHTest()
+//        allHTest()
 //        allVTest()
         // Do any additional setup after loading the view, typically from a nib.
     }
@@ -75,9 +81,80 @@ class ViewController: UIViewController {
 //        }
 
         
-        view.layoutSubviews2(0, end: view.subviews.count)
+        view.Layout()
         
     }
+    
+    
+    func initTableview(){
+        tableView=UITableView()
+        
+        tableView?.flexHBySuper()
+        tableView?.flexVBySuper()
+        
+        tableView?.delegate=self
+        tableView?.dataSource=self
+        
+        view.VLayout(view: tableView!)
+    }
+    
+    
+    
+//MARK:-tableview
+    
+    
+    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int{
+        return cellTitles.count
+    }
+    
+    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell{
+        
+        
+        
+        let cellid="cellid"
+        var cell = tableView.dequeueReusableCellWithIdentifier(cellid)
+        if (cell == nil)
+        {
+            cell = UITableViewCell(style: UITableViewCellStyle.Default, reuseIdentifier: cellid)
+            
+            let cellview:UIView=(cell?.contentView)!
+            
+            cellview.padding=(5,10,5,10)
+            cellview.vAlignType = .VAlignCenter
+            
+            let titlelable=UILabel()
+            titlelable.text="text"
+            titlelable.flexHBySuper()
+            titlelable.tag=1
+            cellview.HLayout(view: titlelable)
+        }
+        
+        
+        if let label:UIView = cell?.contentView.viewWithTag(1){
+            if cellTitles.count > indexPath.row {
+                (label as! UILabel).text = cellTitles[indexPath.row]
+            }
+        }
+        
+        cell?.contentView.Layout()
+        
+        return cell!
+    }
+    
+    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath){
+        
+        switch indexPath.row{
+        case 0:
+            let vc = VerticalViewController()
+            navigationController?.pushViewController(vc, animated: true)
+        case  1:
+            let vc = HorizontalViewController()
+            navigationController?.pushViewController(vc, animated: true)
+        default:()
+        }
+        
+    }
+    
     
     func allVTest()
     {
@@ -434,7 +511,7 @@ class ViewController: UIViewController {
             infolabel]])
 //        userview.subviews[1].vAlignType = .VAlignCenter
         
-        view.VLayout(view: userview)
+//        view.VLayout(view: userview)
         
         for index in 0...3{
             
@@ -455,7 +532,9 @@ class ViewController: UIViewController {
         
 //        let button=UIButton(frame: CGRectMake(0,0,100,40))
         button.frame=CGRectMake(0,0,100,40)
-        button.alignInfo.0 = .AlignSelf
+//        button.alignInfo.0 = .AlignSelf
+//        button.alignInfo.0 = .AlignIgnore
+        button.alignIgnore()
         button.layer.cornerRadius=3
         button.backgroundColor=UIColor.blueColor()
         button.setTitle("press", forState: .Normal)
@@ -515,8 +594,6 @@ class ViewController: UIViewController {
                 self.button.enabled=true
                 })
 //        })
-
-    
     }
 }
 
