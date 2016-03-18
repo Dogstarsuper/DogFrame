@@ -1,50 +1,45 @@
 //
-//  VerticalViewController.swift
+//  FlexViewController.swift
 //  DogFrame
 //
-//  Created by 解杨 on 16/3/17.
+//  Created by 解杨 on 16/3/18.
 //  Copyright © 2016年 解杨. All rights reserved.
 //
 
 import Foundation
 import UIKit
 
-class VerticalViewController: DemoBaseViewController{
+class FlexViewController:DemoBaseViewController{
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        navigationItem.title="Vertical"
+        
+        
+        navigationItem.title="Flex"
         view.backgroundColor=UIBlackColor
         view.gapV=0.5
         view.gapH=0.5
         initUI()
-        
         checkAlignOrientation()
-
     }
-    
     
     func initUI(){
         
-        //left demo
-        let layoutleftview=getDemoView( "Left(default)")
+        let gapVDemo=getDemoView("gapV(default:0)")
+        gapVDemo.showView.gapV=10
+        gapVDemo.showView.setLabelTest("view gapV:10")
         
-        //middle demo
-        let layoutmiddleview=getDemoView("Middle")
-        layoutmiddleview.showView.hAlignType = .HAlignMiddle
+        let gapHDemo=getDemoView("gapH(default:0)")
+        gapHDemo.showView.gapH=10
+        gapHDemo.showView.alignInfo.1 = .AlignH
+        gapHDemo.showView.setLabelTest("view gapH:10")
         
-        //right demo
-        let layoutrightview=getDemoView("Right")
-        layoutrightview.showView.hAlignType = .HAlignRight
-        
-        
-        view.VLayout([
-            layoutleftview,
-            layoutmiddleview,
-            layoutrightview
+        view.VLayout([gapVDemo,
+            gapHDemo
             ])
         
     }
+    
     
     func getDemoView(text:String)->DemoView{
         
@@ -70,13 +65,10 @@ class VerticalViewController: DemoBaseViewController{
         
         return demoview
     }
-
     
     override func viewWillTransitionToSize(size: CGSize, withTransitionCoordinator coordinator: UIViewControllerTransitionCoordinator){
         checkAlignOrientation()
         
         super.viewWillTransitionToSize(size, withTransitionCoordinator: coordinator)
     }
-    
-
 }

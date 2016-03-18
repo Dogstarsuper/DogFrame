@@ -9,6 +9,10 @@
 import Foundation
 import UIKit
 
+let UIWhiteColor=UIColor.whiteColor()
+let UIBlackColor=UIColor.blackColor()
+
+let DogFrameBorderColor=UIColor(red: 100.0/255, green: 100.0/255, blue: 100.0/255, alpha: 1)
 
 class LabelView:UIView,NSCopying{
     
@@ -25,13 +29,14 @@ class LabelView:UIView,NSCopying{
         label.flexHBySuper()
         label.text=text
         label.textColor = UIColor(red: 100.0/255, green: 100.0/255, blue: 100.0/255, alpha: 1)
+        labelCorner()
         VLayout(view: label)
     }
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         padding=(3,3,3,3)
-        label.flexHBySuper()
+//        label.flexHBySuper()
         label.text=""
         label.textColor = UIColor(red: 100.0/255, green: 100.0/255, blue: 100.0/255, alpha: 1)
         VLayout(view: label)
@@ -58,8 +63,9 @@ class LabelView:UIView,NSCopying{
     
     func labelCorner(){
         
-        hAlignType = .HAlignLeft
-        vAlignType = .VAlignTop
+//        hAlignType = .HAlignLeft
+//        vAlignType = .VAlignTop
+        label.alignIgnore()
     }
 }
 
@@ -75,12 +81,14 @@ class DemoView:UIView,NSCopying{
         
         descView.setLabelTest(text)
         padding=(3,3,3,3)
+        descView.labelCorner()
 
         showView.label.frame.origin=CGPointMake(3, 3)
-        showView.label.alignIgnore()
+//        showView.label.alignIgnore()
+        showView.padding=(0,0,0,0)
         showView.label.sizeToFit()
         showView.layer.borderWidth=0.5
-        showView.layer.borderColor=UIColor(red: 150.0/255, green: 150.0/255, blue: 150.0/255, alpha: 1).CGColor
+        showView.layer.borderColor=DogFrameBorderColor.CGColor
         showView.flexVBySuper()
         showView.flexHBySuper()
         

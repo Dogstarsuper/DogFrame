@@ -15,7 +15,7 @@ let UIYellowColor=UIColor.yellowColor()
 class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource {
 
     var tableView:UITableView?
-    var cellTitles=["Vertical layout","Horizontal layout"]
+    var cellTitles=["Vertical layout","Horizontal layout","Padding","Gap","Flex","User info demo"]
     var button:UIButton = UIButton()
     var userlogo:UIView=UIView()
     
@@ -149,6 +149,18 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             navigationController?.pushViewController(vc, animated: true)
         case  1:
             let vc = HorizontalViewController()
+            navigationController?.pushViewController(vc, animated: true)
+        case 2:
+            let vc = PaddingViewController()
+            navigationController?.pushViewController(vc, animated: true)
+        case 3:
+            let vc = GapViewController()
+            navigationController?.pushViewController(vc, animated: true)
+        case 4:
+            let vc = FlexViewController()
+            navigationController?.pushViewController(vc, animated: true)
+        case 5:
+            let vc = UserDemoViewController()
             navigationController?.pushViewController(vc, animated: true)
         default:()
         }

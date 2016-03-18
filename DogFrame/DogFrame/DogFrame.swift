@@ -59,8 +59,7 @@ typealias Flex=(FlexType,CGFloat)
 typealias AlignData=(normalsize:CGSize,maxsize:CGSize,normalview:Int,flexview:Int)
 typealias AlignInfo=(AlignType,AlignOrientation)
 
-let UIWhiteColor=UIColor.whiteColor()
-let UIBlackColor=UIColor.blackColor()
+
 
 //public func + (lf:CGFloat,rf:CGFloat)->CGFloat{
 //    return (lf==CGFloat.infinity || rf==CGFloat.infinity) ? CGFloat.infinity : lf + rf
